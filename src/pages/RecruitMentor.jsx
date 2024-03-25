@@ -15,6 +15,7 @@ export default function RecruitMentor() {
 
   const submitStudyHandler = async (data) => {
     const formData = new FormData();
+    formData.append("teamname", data.teamname);
     formData.append("title", data.title);
     formData.append("contents", data.contents);
 
@@ -59,6 +60,11 @@ export default function RecruitMentor() {
     <>
       <Container>
         <TitleInput
+          type="teamname"
+          {...register("teamname")}
+          placeholder="팀명을 입력하세요"
+        />
+        <TitleInput
           type="title"
           {...register("title")}
           placeholder="제목을 입력하세요"
@@ -83,19 +89,19 @@ export default function RecruitMentor() {
           <TagsBox>
             <SubjectTag
               onClick={() => subjectTagClick("어학")}
-              isselected={subject === "어학"}
+              selected={subject === "어학"}
             >
               어학
             </SubjectTag>
             <SubjectTag
               onClick={() => subjectTagClick("자격증")}
-              isselected={subject === "자격증"}
+              selected={subject === "자격증"}
             >
               자격증
             </SubjectTag>
             <SubjectTag
               onClick={() => subjectTagClick("전공")}
-              isselected={subject === "전공"}
+              selected={subject === "전공"}
             >
               전공
             </SubjectTag>
@@ -104,13 +110,13 @@ export default function RecruitMentor() {
           <TagsBox>
             <RoleTag
               onClick={() => roleTagClick("멘토")}
-              isselected={role === "멘토"}
+              selected={role === "멘토"}
             >
               멘토
             </RoleTag>
             <RoleTag
               onClick={() => roleTagClick("멘티")}
-              isselected={role === "멘티"}
+              selected={role === "멘티"}
             >
               멘티
             </RoleTag>
@@ -119,25 +125,25 @@ export default function RecruitMentor() {
           <TagsBox>
             <ChooseDateTag
               onClick={() => frequencyTagClick("한번")}
-              isselected={frequency === "한번"}
+              selected={frequency === "한번"}
             >
               1주일 1번
             </ChooseDateTag>
             <ChooseDateTag
               onClick={() => frequencyTagClick("두번")}
-              isselected={frequency === "두번"}
+              selected={frequency === "두번"}
             >
               1주일 2번
             </ChooseDateTag>
             <ChooseDateTag
               onClick={() => frequencyTagClick("세번")}
-              isselected={frequency === "세번"}
+              selected={frequency === "세번"}
             >
               1주일 3번
             </ChooseDateTag>
             <ChooseDateTag
               onClick={() => frequencyTagClick("네번 이상")}
-              isselected={frequency === "네번 이상"}
+              selected={frequency === "네번 이상"}
             >
               1주일 4번 이상
             </ChooseDateTag>
@@ -209,7 +215,7 @@ const TagsBox = styled.div`
 `;
 
 const SubjectTag = styled.div`
-  background-color: ${(props) => (props.isselected ? "#4CAF50" : "#a7a7a7")};
+  background-color: ${(props) => (props.selected ? "#4CAF50" : "#a7a7a7")};
   min-width: 40px;
   border-radius: 8px;
   height: 19px;
@@ -222,7 +228,7 @@ const SubjectTag = styled.div`
 `;
 
 const RoleTag = styled.div`
-  background-color: ${(props) => (props.isselected ? "#4CAF50" : "#a7a7a7")};
+  background-color: ${(props) => (props.selected ? "#4CAF50" : "#a7a7a7")};
   min-width: 40px;
   border-radius: 8px;
   height: 19px;
@@ -235,7 +241,7 @@ const RoleTag = styled.div`
 `;
 
 const ChooseDateTag = styled.div`
-  background-color: ${(props) => (props.isselected ? "#4CAF50" : "#a7a7a7")};
+  background-color: ${(props) => (props.selected ? "#4CAF50" : "#a7a7a7")};
   min-width: 69px;
   border-radius: 8px;
   height: 19px;
@@ -294,8 +300,8 @@ const Button = styled.button`
 
 const WriteActionButtonsBlock = styled.div`
   margin-top: 30px;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
   button + button {
-    margin-left: 0.5rem;
+    margin-left: 2rem;
   }
 `;

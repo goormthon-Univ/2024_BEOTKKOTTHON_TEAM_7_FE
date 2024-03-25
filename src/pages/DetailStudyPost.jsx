@@ -7,6 +7,7 @@ import StudyCommentList from "../components/Write/StudyCommentList";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../utils/customAxios";
+import JoinedModalPage from "../components/Find/JoinedModalPage";
 
 const DetailStudyPost = () => {
   const { postId } = useParams();
@@ -14,9 +15,9 @@ const DetailStudyPost = () => {
   const [postData, setPostData] = useState([]); // GET 한 스터디 포스트를 저장할 상태
   const [title, setTitle] = useState("");
   const [isCommited, setIsCommited] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [isJoined, setIsJoined] = useState("");
 
-  /*
-   */
   const getDetailStudy = async () => {
     const response = await api.get(`/study/${postId}`);
     console.log(response);
@@ -35,13 +36,18 @@ const DetailStudyPost = () => {
     setTitle(e.target.value);
   };
 
-  const handleCommentSubmit = () => {
+  const handleCommentSubmit = async () => {
     setIsCommited(true);
     const commentData = {
       contents: title, // 사용자가 입력한 동적인 값
     };
 
-    api
+    setPostData((prevData) => ({
+      ...prevData,
+      commentNum: prevData.commentNum + 1,
+    }));
+
+    await api
       .post(`/user/study/${postId}/talk/write`, commentData)
       .then((response) => {
         console.log("댓글이 성공적으로 전송되었습니다.", response.data);
@@ -73,8 +79,22 @@ const DetailStudyPost = () => {
     }
   };
 
+  const handleJoin = async () => {
+    try {
+      const responseJoined = await api.get(`/user/study/${postId}/write`);
+      console.log(responseJoined.data);
+      setModalOpen(true);
+      setIsJoined(responseJoined.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
+      {modalOpen && (
+        <JoinedModalPage setModalOpen={setModalOpen} isJoined={isJoined} />
+      )}
       <PostBlock>
         <PostItem
           key={postId}
@@ -89,6 +109,7 @@ const DetailStudyPost = () => {
           heartNum={postData.heartNum}
           commentNum={postData.commentNum}
           onLike={handleLike}
+          onJoin={handleJoin}
         />
       </PostBlock>
       <StudyCommentList postId={postId} isCommited={isCommited} />
@@ -119,9 +140,11 @@ const PostItem = ({
   heartNum,
   commentNum,
   onLike,
+  onJoin,
 }) => {
   return (
     <PostItemBlock>
+      <Button onClick={onJoin}>스터디 신청</Button>
       <UserInfo>
         <ProfilePic alt="profile" />
         <div
@@ -349,6 +372,23 @@ const CommitButton = styled.div`
   width: 21px;
   height: 21px;
   justify-content: space-between;
+`;
+
+const Button = styled.button`
+  position: absolute;
+  padding: 9px 16px;
+  justify-content: center;
+  align-items: center;
+  margin-left: 18rem;
+  margin-top: 10px;
+  color: #fff;
+  text-align: center;
+  font-size: 8px;
+  font-style: bold;
+
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: #39af37;
 `;
 
 export default DetailStudyPost;
